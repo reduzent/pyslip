@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-PORT = 2346
+PORT = 2345
 
 
 
@@ -13,7 +13,7 @@ sock, addr = conn.accept()
 rest = ''
 started = False
 escaped = False
-deslipper = slip.slipdec()
+deslipper = slip.slip()
 while True:
 	chunk = sock.recv(4096)
 	if not chunk:
@@ -22,4 +22,5 @@ while True:
 	packets = deslipper.decode()
 	for packet in packets:
 		print "RESULTS: ", repr(packet)
- 
+ 		encoded = deslipper.encode(packet)
+		sock.sendall(encoded)
