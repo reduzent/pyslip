@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # SLIP decoder
-class slipdec():
+class slip():
 
 	def __init__(self):
 		self.started = False
@@ -57,4 +57,18 @@ class slipdec():
 		self.stream = ''
 		return (packetlist)
 
- 
+	def encode(self, packet):
+		encoded = self.SLIP_END
+		for char in packet:
+			# SLIP_END
+			if char == self.SLIP_END:
+				encoded +=  self.SLIP_ESC + self.SLIP_ESC_END
+			# SLIP_ESC
+			elif char == self.SLIP_ESC:
+				encoded += self.SLIP_ESC + self.SLIP_ESC_ESC
+			# the rest can simply be appended
+			else:
+				encoded += char
+		encoded += self.SLIP_END
+		return (encoded)
+
