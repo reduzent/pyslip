@@ -22,13 +22,10 @@ class slip():
 			# SLIP_END
 			if char == self.SLIP_END:
 				if self.started:
-					if len(self.packet) > 0:
-						self.started = False
-						packetlist.append(self.packet)
-						self.packet = ''
+					packetlist.append(self.packet)
+					self.packet = ''
 				else:
 					self.started = True
-					self.packet = ''
 			# SLIP_ESC
 			elif char == self.SLIP_ESC:
 				self.escaped = True
