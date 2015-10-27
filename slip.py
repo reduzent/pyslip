@@ -52,6 +52,7 @@ class slip():
 				else:
 					self.packet += char
 		self.stream = ''
+		self.started = False
 		return (packetlist)
 
 	def encode(self, packet):
