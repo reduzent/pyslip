@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import serial
+import binascii
 
 # SLIP decoder
 class slip():
@@ -12,6 +14,7 @@ class slip():
 		self.SLIP_ESC = '\xdb'		# dec: 219
 		self.SLIP_ESC_END = '\xdc'	# dec: 220
 		self.SLIP_ESC_ESC = '\xdd'	# dec: 221
+		self.serialComm = None
 
 	def append(self, chunk):
 		self.stream += chunk
@@ -23,9 +26,9 @@ class slip():
 			if char == self.SLIP_END:
 				if self.started:
 					packetlist.append(self.packet)
-					self.packet = ''
 				else:
 					self.started = True
+				self.packet = ''
 			# SLIP_ESC
 			elif char == self.SLIP_ESC:
 				self.escaped = True
@@ -46,16 +49,19 @@ class slip():
 			# all others
 			else:
 				if self.escaped:
-					print "error in SLIP packet"
+					raise Exception('SLIP Protocol Error')
 					self.packet = ''
 					self.escaped = False
 				else:
 					self.packet += char
+					self.started = True
 		self.stream = ''
 		self.started = False
 		return (packetlist)
-
+		
 	def encode(self, packet):
+		# Encode an initial END character to flush out any data that 
+		# may have accumulated in the receiver due to line noise
 		encoded = self.SLIP_END
 		for char in packet:
 			# SLIP_END
