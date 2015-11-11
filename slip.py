@@ -17,7 +17,7 @@ class slip():
 		self.serialComm = None
 
 	def append(self, chunk):
-		self.stream += chunk
+		self.stream += chunk.decode('iso-8859-1')
 
 	def decode(self):
 		packetlist = []
